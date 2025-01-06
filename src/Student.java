@@ -62,11 +62,11 @@ public class Student {
     }
 
     public String displayInfo() {
-        return "Student{" +
-                "name='" + fName + " " + lName + '\'' +
-                ", birth=" + bDay +
-                ", grade=" + grade +
-                ", studentID='" + studentID + '\'' +
-                '}';
+        return
+                "ID: " + studentID + '\n' +
+                "Full name: " + fName + " " + lName + '\n' +
+                "Birth: " + bDay + '\n' +
+                "Grade: " + grade;
+
     }
 }

@@ -140,9 +140,7 @@ public class StudentManagerImpl implements StudentManager {
                                 resultSet.getInt("studentID")
                         )
                 );
-
             }
-
         } catch (SQLException e) {
             throw new RuntimeException("Failed to execute query: " + query, e);
         }
