@@ -101,9 +101,13 @@ public class StudentManagementApp {
         StudentTableModel tableModel = new StudentTableModel(students);
         JTable table = new JTable(tableModel);
 
-        // Add "View" and "Delete" buttons
+        JButton editButton = new JButton("Edit");
         JButton viewButton = new JButton("View");
         JButton deleteButton = new JButton("Delete");
+        
+        editButton.addActionListener(e -> {
+
+        });
 
         // Action listener for "View"
         viewButton.addActionListener(e -> {
