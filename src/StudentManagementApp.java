@@ -133,42 +133,50 @@ public class StudentManagementApp {
         gradeTxt.setPreferredSize(new Dimension(165, 25));
 
         // Add components to detailPanel
+
+        //-----------------------------------------------------------------------------------------------------
+
         gbc.insets = new Insets(5, 5, 5, 5);
+
+        //-----------------------------------------------------------------------------------------------------
+
         gbc.gridx = 0;
-        gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
+
+        //-----------------------------------------------------------------------------------------------------
+
+        gbc.gridy = 0;
         detailPanel.add(fName, gbc);
 
-        gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        detailPanel.add(fNameTxt, gbc);
-
-        gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.EAST;
         detailPanel.add(lName, gbc);
 
-        gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        detailPanel.add(lNameTxt, gbc);
-
-        gbc.gridx = 0;
         gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.EAST;
         detailPanel.add(bDay, gbc);
 
-        gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        detailPanel.add(bDayChooser, gbc);
-
-        gbc.gridx = 0;
         gbc.gridy = 3;
-        gbc.anchor = GridBagConstraints.EAST;
         detailPanel.add(grade, gbc);
 
+        //-----------------------------------------------------------------------------------------------------
+
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
+
+        //-----------------------------------------------------------------------------------------------------
+
+        gbc.gridy = 0;
+        detailPanel.add(fNameTxt, gbc);
+
+        gbc.gridy = 1;
+        detailPanel.add(lNameTxt, gbc);
+
+        gbc.gridy = 2;
+        detailPanel.add(bDayChooser, gbc);
+
+        gbc.gridy = 3;
         detailPanel.add(gradeTxt, gbc);
+
+        //-----------------------------------------------------------------------------------------------------
 
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // Disable automatic resizing
         table.getColumnModel().getColumn(0).setPreferredWidth(40); // ID column
