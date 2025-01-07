@@ -82,7 +82,7 @@ public class StudentManagementApp {
 
         login.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        loginButton.addActionListener(e -> {
+        loginButton.addActionListener(_ -> {
             output.setText("Connecting...");
             try {
                 String loginVal = txtUser.getText();
@@ -90,7 +90,7 @@ public class StudentManagementApp {
                 manager = new StudentManagerImpl(loginVal, passVal);
                 output.setText("Connected!");
                 // Create and switch to mainPanel after successful login
-                container.add(mainPanel(cl, container), "2");
+                container.add(mainPanel(container), "2");
                 cl.show(container, "2");
             } catch (Exception exception) {
                 output.setText("Failed!");
@@ -100,7 +100,7 @@ public class StudentManagementApp {
         return login;
     }
 
-    public JPanel mainPanel(CardLayout cl, JPanel container) {
+    public JPanel mainPanel(JPanel container) {
         ArrayList<Student> students = manager.displayAllStudents();
         JPanel main = new JPanel(new BorderLayout());
 
@@ -206,7 +206,7 @@ public class StudentManagementApp {
         });
 
         // Action listener for "Delete"
-        deleteButton.addActionListener(e -> {
+        deleteButton.addActionListener(_ -> {
             int selectedRow = table.getSelectedRow();
             if (selectedRow >= 0) {
                 int confirm = JOptionPane.showConfirmDialog(container,
@@ -229,7 +229,7 @@ public class StudentManagementApp {
             }
         });
 
-        clearButton.addActionListener(e -> {
+        clearButton.addActionListener(_ -> {
             table.clearSelection();
             fNameTxt.setText("");
             lNameTxt.setText("");
@@ -239,33 +239,30 @@ public class StudentManagementApp {
             actionButton.setActionCommand("Add");
         });
 
-        actionButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                String command = e.getActionCommand();
+        actionButton.addActionListener(e -> {
+            String command = e.getActionCommand();
 
-                if ("Add".equals(command)) {
-                    Student student = new Student(
-                            fNameTxt.getText(),
-                            lNameTxt.getText(),
-                            new SimpleDateFormat("yyyy-MM-dd").format(bDayChooser.getDate()),
-                            Double.parseDouble(gradeTxt.getText())
-                    );
+            if ("Add".equals(command)) {
+                Student student = new Student(
+                        fNameTxt.getText(),
+                        lNameTxt.getText(),
+                        new SimpleDateFormat("yyyy-MM-dd").format(bDayChooser.getDate()),
+                        Double.parseDouble(gradeTxt.getText())
+                );
 
-                    manager.addStudent(student);
-                    students.add(student);
+                manager.addStudent(student);
+                students.add(student);
+                tableModel.fireTableDataChanged();
+
+            } else if ("Edit".equals(command)) {
+                if(lastSelectedStudent != null) {
+                    lastSelectedStudent.setfName(fNameTxt.getText());
+                    lastSelectedStudent.setlName(lNameTxt.getText());
+                    lastSelectedStudent.setbDay(new SimpleDateFormat("yyyy-MM-dd").format(bDayChooser.getDate()));
+                    lastSelectedStudent.setGrade(Double.parseDouble(gradeTxt.getText()));
+
+                    manager.updateStudent(lastSelectedStudent);
                     tableModel.fireTableDataChanged();
-
-                } else if ("Edit".equals(command)) {
-                    if(lastSelectedStudent != null) {
-                        lastSelectedStudent.setfName(fNameTxt.getText());
-                        lastSelectedStudent.setlName(lNameTxt.getText());
-                        lastSelectedStudent.setbDay(new SimpleDateFormat("yyyy-MM-dd").format(bDayChooser.getDate()));
-                        lastSelectedStudent.setGrade(Double.parseDouble(gradeTxt.getText()));
-
-                        manager.updateStudent(lastSelectedStudent);
-                        tableModel.fireTableDataChanged();
-                    }
                 }
             }
         });
@@ -316,14 +313,12 @@ class StudentTableModel extends javax.swing.table.AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Student student = students.get(rowIndex);
-        switch (columnIndex) {
-            case 0: return student.getStudentID();
-            case 1: return student.getfName();
-            case 2: return student.getlName();
-            //case 3: return student.getbDay();
-            //case 4: return student.getGrade();
-            default: return null;
-        }
+        return switch (columnIndex) {
+            case 0 -> student.getStudentID();
+            case 1 -> student.getfName();
+            case 2 -> student.getlName();
+            default -> null;
+        };
     }
 
     public Student getStudentAt(int rowIndex) {
