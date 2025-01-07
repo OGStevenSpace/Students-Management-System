@@ -6,7 +6,6 @@ import java.util.ArrayList;
 public class StudentManagementApp {
 
     private StudentManagerImpl manager;
-    JPanel studDet = new JPanel();
 
     public StudentManagementApp() {
 
@@ -19,6 +18,7 @@ public class StudentManagementApp {
         frame.setResizable(false);
 
         container.setLayout(cl);
+        container.setPreferredSize(new Dimension(800, 600));
         container.add(loginPanel(cl, container), "1");
         cl.show(container, "1");
         frame.add(container);
@@ -87,6 +87,7 @@ public class StudentManagementApp {
                 output.setText("Connected!");
                 // Create and switch to mainPanel after successful login
                 container.add(mainPanel(cl, container), "2");
+                container.add(detailsPanel(cl, container), "3");
                 cl.show(container, "2");
             } catch (Exception exception) {
                 output.setText("Failed!");
@@ -97,10 +98,12 @@ public class StudentManagementApp {
     }
 
     public JPanel mainPanel(CardLayout cl, JPanel container) {
+        JPanel main = new JPanel(new BorderLayout());
+        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         ArrayList<Student> students = manager.displayAllStudents();
         StudentTableModel tableModel = new StudentTableModel(students);
         JTable table = new JTable(tableModel);
-
+        JScrollPane tableScrollPane = new JScrollPane(table);
         JButton editButton = new JButton("Edit");
         JButton viewButton = new JButton("View");
         JButton deleteButton = new JButton("Delete");
@@ -141,17 +144,20 @@ public class StudentManagementApp {
             }
         });
 
-        // Panel layout
-        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         actionPanel.add(viewButton);
         actionPanel.add(deleteButton);
-
-        JScrollPane tableScrollPane = new JScrollPane(table);
-        JPanel main = new JPanel(new BorderLayout());
         main.add(tableScrollPane, BorderLayout.CENTER);
         main.add(actionPanel, BorderLayout.SOUTH);
 
         return main;
+    }
+
+    public JPanel detailsPanel(CardLayout cl, JPanel container){
+        JPanel details = new JPanel(new BorderLayout());
+        
+
+
+        return details;
     }
 
 }
