@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.sql.*;
 import java.util.Properties;
 import java.util.Scanner;
+import java.sql.Date;
 
 public class StudentManagerImpl implements StudentManager {
     //Using PostgreSQL for database
@@ -78,14 +79,22 @@ public class StudentManagerImpl implements StudentManager {
     @Override
     public void addStudent(Student student) {
         String query = "INSERT INTO students(fName, lName, bDay, grade) VALUES " +
-                "(?, ?, TO_DATE(?, 'YYYY-MM-DD'), ?)";
+                "(?, ?, TO_DATE(?, 'YYYY-MM-DD'), ?)" +
+                "RETURNING studentID"; // Assuming 'id' is the primary key
 
         try (PreparedStatement preparedStatement = connection().prepareStatement(query)) {
             preparedStatement.setString(1, student.getfName());
             preparedStatement.setString(2, student.getlName());
             preparedStatement.setString(3, student.getbDay());
             preparedStatement.setDouble(4, student.getGrade());
-            preparedStatement.executeUpdate();
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int generatedId = resultSet.getInt("studentID");
+                    student.setStudentID(generatedId);
+                }
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException("Failed to execute query: " + query, e);
         }
@@ -109,7 +118,7 @@ public class StudentManagerImpl implements StudentManager {
     //Therefore, it won't be updated (no item with ID=0 exists).
     @Override
     public void updateStudent(Student student) {
-        String query = "UPDATE students SET fName = ?, lName = ?, bDay = ?, grade = ? WHERE studentID = ?";
+        String query = "UPDATE students SET fName = ?, lName = ?, bDay = TO_DATE(?, 'YYYY-MM-DD'), grade = ? WHERE studentID = ?";
         try (PreparedStatement preparedStatement = connection().prepareStatement(query)) {
             preparedStatement.setString(1, student.getfName());
             preparedStatement.setString(2, student.getlName());
