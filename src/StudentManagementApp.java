@@ -8,11 +8,19 @@ import com.toedter.calendar.JDateChooser;
 
 public class StudentManagementApp {
 
-    private StudentManagerImpl manager;
-    private Student lastSelectedStudent = null;
+    // Fields to manage the application state and UI
+    private StudentManagerImpl manager; // Backend manager for handling students
+    private Student lastSelectedStudent = null; // Keeps track of the last selected student in the table
+    private final static Dimension objectSize = new Dimension(165, 25); // Standard size for form fields
+
+    // UI components for the main panel
+    private final JTextField fNameTxt = new JTextField();
+    private final JTextField lNameTxt = new JTextField();
+    private final JDateChooser bDayChooser = new JDateChooser();
+    private final JTextField gradeTxt = new JTextField();
 
     public StudentManagementApp() {
-
+        JPanel loginPanel = new JPanel(new GridBagLayout());
         JFrame frame = new JFrame("Student Management System");
         JPanel container = new JPanel();
         CardLayout cl = new CardLayout();
@@ -23,7 +31,10 @@ public class StudentManagementApp {
 
         container.setLayout(cl);
         container.setPreferredSize(new Dimension(600, 220));
-        container.add(loginPanel(cl, container), "1");
+
+        // Add login panel to the container and show it initially
+        // The main panel is initialized within the loginPanel after successful login
+        container.add(loginPanel(loginPanel, container, cl), "1");
         cl.show(container, "1");
         frame.add(container);
         frame.setSize(600, 220);
@@ -31,57 +42,38 @@ public class StudentManagementApp {
         frame.setVisible(true);
     }
 
-    public JPanel loginPanel(CardLayout cl, JPanel container) {
+    // Creates and sets up the login panel
+    public JPanel loginPanel(JPanel loginPanel, JPanel container, CardLayout cl) {
         JPanel login = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        JLabel user = new JLabel("User: ");
-        JLabel pass = new JLabel("Password: ");
+        // UI components for login panel
+        JLabel user = new JLabel("User:");
+        JLabel pass = new JLabel("Password:");
         JLabel output = new JLabel();
+
         JTextField txtUser = new JTextField();
         JTextField txtPass = new JTextField();
 
         JButton loginButton = new JButton("Log In");
 
-        txtUser.setPreferredSize(new Dimension(250, 25));
-        txtPass.setPreferredSize(new Dimension(250, 25));
+        txtUser.setPreferredSize(objectSize);
+        txtPass.setPreferredSize(objectSize);
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.EAST;
+        // Add components to the panel using GridBagConstraints
         gbc.insets = new Insets(10, 0, 0, 5);
-        login.add(user, gbc);
+        gbcManager(login, user, gbc, 0, 0, 1, GridBagConstraints.EAST);
+        gbcManager(login, pass, gbc, 0, 1, 1, GridBagConstraints.EAST);
+        gbcManager(login, output, gbc, 0, 2, 1, GridBagConstraints.EAST);
 
-        gbc.gridx = 1;
-        gbc.gridy = 0;
         gbc.insets = new Insets(10, 0, 0, 0);
-        login.add(txtUser, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.insets = new Insets(10, 0, 0, 5);
-        login.add(pass, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.insets = new Insets(10, 0, 0, 0);
-        login.add(txtPass, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.insets = new Insets(10, 0, 0, 5);
-        login.add(output, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.insets = new Insets(10, 0, 0, 0);
-        login.add(loginButton, gbc);
+        gbcManager(login, txtUser, gbc, 1, 0, 1, GridBagConstraints.WEST);
+        gbcManager(login, txtPass, gbc, 1, 1, 1, GridBagConstraints.WEST);
+        gbcManager(login, loginButton, gbc, 1, 2, 1, GridBagConstraints.EAST);
 
         login.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        // Action listener for login button
         loginButton.addActionListener(_ -> {
             output.setText("Connecting...");
             try {
@@ -89,6 +81,7 @@ public class StudentManagementApp {
                 String passVal = txtPass.getText();
                 manager = new StudentManagerImpl(loginVal, passVal);
                 output.setText("Connected!");
+
                 // Create and switch to mainPanel after successful login
                 container.add(mainPanel(container), "2");
                 cl.show(container, "2");
@@ -96,11 +89,14 @@ public class StudentManagementApp {
                 output.setText("Failed!");
             }
         });
-
         return login;
     }
 
+    // Creates and sets up the main panel for managing students
     public JPanel mainPanel(JPanel container) {
+        int gbcx;
+        int dir;
+
         ArrayList<Student> students = manager.displayAllStudents();
         JPanel main = new JPanel(new BorderLayout());
 
@@ -108,75 +104,47 @@ public class StudentManagementApp {
         JPanel detailPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
+        // Table for displaying students
         StudentTableModel tableModel = new StudentTableModel(students);
         JTable table = new JTable(tableModel);
         JScrollPane tableScrollPane = new JScrollPane(table);
 
+        // Buttons for actions
         JButton actionButton = new JButton("Add");
         actionButton.setActionCommand("Add");
         JButton clearButton = new JButton("Clear Form");
         JButton deleteButton = new JButton("Delete");
 
+        // Labels for student details
         JLabel fName = new JLabel("First Name");
         JLabel lName = new JLabel("Last Name");
         JLabel bDay = new JLabel("Birthday");
         JLabel grade = new JLabel("Grade");
 
-        JTextField fNameTxt = new JTextField();
-        JTextField lNameTxt = new JTextField();
-        JDateChooser bDayChooser = new JDateChooser();
-        JTextField gradeTxt = new JTextField();
-
-        fNameTxt.setPreferredSize(new Dimension(165, 25));
-        lNameTxt.setPreferredSize(new Dimension(165, 25));
-        bDayChooser.setPreferredSize(new Dimension(165, 25));
-        gradeTxt.setPreferredSize(new Dimension(165, 25));
+        // Set preferred sizes for input fields
+        fNameTxt.setPreferredSize(objectSize);
+        lNameTxt.setPreferredSize(objectSize);
+        bDayChooser.setPreferredSize(objectSize);
+        gradeTxt.setPreferredSize(objectSize);
 
         // Add components to detailPanel
 
-        //-----------------------------------------------------------------------------------------------------
-
         gbc.insets = new Insets(5, 5, 5, 5);
+        gbcx = 0;
+        dir = GridBagConstraints.EAST;
 
-        //-----------------------------------------------------------------------------------------------------
+        gbcManager(detailPanel, fName, gbc, gbcx, 0, 1, dir);
+        gbcManager(detailPanel, lName, gbc, gbcx, 1, 1, dir);
+        gbcManager(detailPanel, bDay, gbc, gbcx, 2, 1, dir);
+        gbcManager(detailPanel, grade, gbc, gbcx, 3, 1, dir);
 
-        gbc.gridx = 0;
-        gbc.anchor = GridBagConstraints.EAST;
+        gbcx = 1;
+        dir = GridBagConstraints.WEST;
 
-        //-----------------------------------------------------------------------------------------------------
-
-        gbc.gridy = 0;
-        detailPanel.add(fName, gbc);
-
-        gbc.gridy = 1;
-        detailPanel.add(lName, gbc);
-
-        gbc.gridy = 2;
-        detailPanel.add(bDay, gbc);
-
-        gbc.gridy = 3;
-        detailPanel.add(grade, gbc);
-
-        //-----------------------------------------------------------------------------------------------------
-
-        gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-
-        //-----------------------------------------------------------------------------------------------------
-
-        gbc.gridy = 0;
-        detailPanel.add(fNameTxt, gbc);
-
-        gbc.gridy = 1;
-        detailPanel.add(lNameTxt, gbc);
-
-        gbc.gridy = 2;
-        detailPanel.add(bDayChooser, gbc);
-
-        gbc.gridy = 3;
-        detailPanel.add(gradeTxt, gbc);
-
-        //-----------------------------------------------------------------------------------------------------
+        gbcManager(detailPanel, fNameTxt, gbc, gbcx, 0, 1, dir);
+        gbcManager(detailPanel, lNameTxt, gbc, gbcx, 1, 1, dir);
+        gbcManager(detailPanel, bDayChooser, gbc, gbcx, 2, 1, dir);
+        gbcManager(detailPanel, gradeTxt, gbc, gbcx, 3, 1, dir);
 
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // Disable automatic resizing
         table.getColumnModel().getColumn(0).setPreferredWidth(40); // ID column
@@ -201,19 +169,13 @@ public class StudentManagementApp {
                         actionButton.setText("Edit");
                         actionButton.setActionCommand("Edit");
                     } else {
-                        table.clearSelection();
-                        fNameTxt.setText("");
-                        lNameTxt.setText("");
-                        bDayChooser.setDate(null);
-                        gradeTxt.setText("");
-                        actionButton.setText("Add");
-                        actionButton.setActionCommand("Add");
+                        resetForm(table, actionButton);
                     }
                 }
             }
         });
 
-        // Action listener for "Delete"
+        // Action listener for delete button
         deleteButton.addActionListener(_ -> {
             int selectedRow = table.getSelectedRow();
             if (selectedRow >= 0) {
@@ -224,12 +186,7 @@ public class StudentManagementApp {
                     Student selectedStudent = tableModel.getStudentAt(selectedRow);
                     manager.removeStudent(selectedStudent.getStudentID());
                     tableModel.removeStudentAt(selectedRow);
-                    fNameTxt.setText("");
-                    lNameTxt.setText("");
-                    bDayChooser.setDate(null);
-                    gradeTxt.setText("");
-                    actionButton.setText("Add");
-                    actionButton.setActionCommand("Add");
+                    resetForm(table, actionButton);
                     JOptionPane.showMessageDialog(container, "Student deleted.");
                 }
             } else {
@@ -237,20 +194,17 @@ public class StudentManagementApp {
             }
         });
 
+        // Action listener for clear button
         clearButton.addActionListener(_ -> {
-            table.clearSelection();
-            fNameTxt.setText("");
-            lNameTxt.setText("");
-            bDayChooser.setDate(null);
-            gradeTxt.setText("");
-            actionButton.setText("Add");
-            actionButton.setActionCommand("Add");
+            resetForm(table, actionButton);
         });
 
+        // Action listener for add/edit button
         actionButton.addActionListener(e -> {
             String command = e.getActionCommand();
 
             if ("Add".equals(command)) {
+                // Add new student
                 Student student = new Student(
                         fNameTxt.getText(),
                         lNameTxt.getText(),
@@ -263,6 +217,7 @@ public class StudentManagementApp {
                 tableModel.fireTableDataChanged();
 
             } else if ("Edit".equals(command)) {
+                // Edit existing student
                 if(lastSelectedStudent != null) {
                     lastSelectedStudent.setfName(fNameTxt.getText());
                     lastSelectedStudent.setlName(lNameTxt.getText());
@@ -275,25 +230,42 @@ public class StudentManagementApp {
             }
         });
 
+        // Add action buttons to actionPanel
         actionPanel.add(deleteButton);
         actionPanel.add(clearButton);
         actionPanel.add(actionButton);
 
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.EAST;
-        detailPanel.add(actionPanel, gbc);
+        gbcManager(detailPanel, actionPanel, gbc, 0, 4, 2, GridBagConstraints.EAST);
 
-
+        // Add panels to the main panel
         main.add(tableScrollPane, BorderLayout.CENTER);
         main.add(detailPanel, BorderLayout.EAST);
 
         return main;
     }
 
+    // Helper method for managing GridBagConstraints
+    private void gbcManager(JPanel panel, Component component, GridBagConstraints gbc, int x, int y, int w, int anchor) {
+        gbc.gridx = x;
+        gbc.gridy = y;
+        gbc.gridwidth = w;
+        gbc.anchor = anchor;
+        panel.add(component, gbc);
+    }
+
+    // Resets the form to its default state
+    private void resetForm(JTable table,JButton actionButton) {
+        table.clearSelection();
+        fNameTxt.setText("");
+        lNameTxt.setText("");
+        bDayChooser.setDate(null);
+        gradeTxt.setText("");
+        actionButton.setText("Add");
+        actionButton.setActionCommand("Add");
+    }
 }
 
+// Custom table model for displaying student data
 class StudentTableModel extends javax.swing.table.AbstractTableModel {
     private final ArrayList<Student> students;
     private final String[] columnNames;
