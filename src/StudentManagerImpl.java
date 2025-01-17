@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 import java.sql.*;
-import java.util.Properties;
-import java.util.Scanner;
 
 public class StudentManagerImpl implements StudentManager {
     private static final Queries query = new Queries();

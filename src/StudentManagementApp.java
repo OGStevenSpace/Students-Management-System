@@ -100,6 +100,7 @@ public class StudentManagementApp {
         ArrayList<Student> students = manager.displayAllStudents();
         JPanel main = new JPanel(new BorderLayout());
 
+        JPanel statsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JPanel detailPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -120,6 +121,9 @@ public class StudentManagementApp {
         JLabel lName = new JLabel("Last Name");
         JLabel bDay = new JLabel("Birthday");
         JLabel grade = new JLabel("Grade");
+
+        JLabel avg = new JLabel("Average");
+        JLabel avgVal = new JLabel();
 
         // Set preferred sizes for input fields
         fNameTxt.setPreferredSize(objectSize);
@@ -187,6 +191,7 @@ public class StudentManagementApp {
                     manager.removeStudent(selectedStudent.getStudentID());
                     tableModel.removeStudentAt(selectedRow);
                     resetForm(table, actionButton);
+                    avgVal.setText(String.valueOf(manager.calculateAverageGrade()));
                     JOptionPane.showMessageDialog(container, "Student deleted.");
                 }
             } else {
@@ -228,6 +233,7 @@ public class StudentManagementApp {
                     tableModel.fireTableDataChanged();
                 }
             }
+            avgVal.setText(String.valueOf(manager.calculateAverageGrade()));
         });
 
         // Add action buttons to actionPanel
@@ -235,9 +241,13 @@ public class StudentManagementApp {
         actionPanel.add(clearButton);
         actionPanel.add(actionButton);
 
+        statsPanel.add(avg);
+        statsPanel.add(avgVal);
+
         gbcManager(detailPanel, actionPanel, gbc, 0, 4, 2, GridBagConstraints.EAST);
 
         // Add panels to the main panel
+        main.add(statsPanel, BorderLayout.NORTH);
         main.add(tableScrollPane, BorderLayout.CENTER);
         main.add(detailPanel, BorderLayout.EAST);
 
