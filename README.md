@@ -86,7 +86,10 @@ The table columns are:
 This is the main GUI class that handles the login screen, main panel, and student management interface. It uses CardLayout for switching between the login and main panels.
 
 ### StudentManagerImpl
-This class implements the StudentManager interface and provides methods for connecting to the PostgreSQL database, as well as CRUD operations (add, remove, update, display) for managing student data.
+This class implements the StudentManager interface and provides the CRUD operations (add, remove, update, display) for managing student data. It connects to the DB with DatabaseManager class.
+
+### DatabaseManager
+This class provides methods for connecting to the PostgreSQL database and to execute the CRUD operations (add, remove, update, display) using queries stored in the Queries class. It can return the necessary values after the action is completed.
 
 ### Student
 This class represents a student with attributes such as first name, last name, birthday, grade, and student ID.
