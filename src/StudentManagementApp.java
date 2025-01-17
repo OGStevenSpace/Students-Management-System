@@ -123,7 +123,7 @@ public class StudentManagementApp {
         JLabel grade = new JLabel("Grade");
 
         JLabel avg = new JLabel("Average");
-        JLabel avgVal = new JLabel();
+        JLabel avgVal = new JLabel(String.valueOf(manager.calculateAverageGrade()));
 
         // Set preferred sizes for input fields
         fNameTxt.setPreferredSize(objectSize);
