@@ -11,6 +11,14 @@ public class DatabaseManager {
         this.url = url;
         this.login = login;
         this.pass = pass;
+
+        //Default behavior is to execute a query for table creation.
+        //Using PostgreSQL syntax to create it only if not exist.
+        try {
+            execute(new Queries().CREATE_TABLE);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //I'm not using the pool managers, so each connection is created anew when needed and closed within try() statement.
