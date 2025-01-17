@@ -1,4 +1,3 @@
-
 public class Main {
     // Main class: Serves as the entry point for the program.
 

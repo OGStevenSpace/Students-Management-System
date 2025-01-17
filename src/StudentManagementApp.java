@@ -308,5 +308,6 @@ class StudentTableModel extends javax.swing.table.AbstractTableModel {
     public void removeStudentAt(int rowIndex) {
         students.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex);
+
     }
 }
