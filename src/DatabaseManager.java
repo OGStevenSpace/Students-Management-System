@@ -6,13 +6,14 @@ public class DatabaseManager {
     private final String login;
     private final String pass;
 
+    //Constructor
     public DatabaseManager(String url, String login, String pass) {
         this.url = url;
         this.login = login;
         this.pass = pass;
     }
 
-
+    //I'm not using the pool managers, so each connection is created anew when needed and closed within try() statement.
     private Connection getConnection() {
         Properties props = new Properties();
 
@@ -61,6 +62,7 @@ public class DatabaseManager {
 
 }
 
+//Query storage. It makes it easier to modify or to add new queries.
 class Queries {
     public String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS students (" +
             "studentID SERIAL PRIMARY KEY, " +
